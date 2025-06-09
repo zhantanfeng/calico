@@ -586,10 +586,12 @@ func GetIdentifiers(args *skel.CmdArgs, nodename string) (*WEPIdentifiers, error
 
 	// Check if the workload is running under Kubernetes.
 	if string(k8sArgs.K8S_POD_NAMESPACE) != "" && string(k8sArgs.K8S_POD_NAME) != "" {
+		// 标记 WEP 来自哪个编排系统（orchestrator）
 		epIDs.Orchestrator = "k8s"
 		epIDs.Pod = string(k8sArgs.K8S_POD_NAME)
 		epIDs.Namespace = string(k8sArgs.K8S_POD_NAMESPACE)
 	} else {
+		// 为了去找是否有残留或之前未清理的 endpoint，但 真正创建 WEP 的时候会使用 "k8s"
 		epIDs.Orchestrator = "cni"
 		epIDs.Pod = ""
 		// For any non-k8s orchestrator we set the namespace to default.
